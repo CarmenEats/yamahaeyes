@@ -427,6 +427,12 @@ def register_commands(bot):
         result = await bot.sync_member(interaction.guild, interaction.user.id)
         await interaction.followup.send(result, ephemeral=True)
 
+    @bot.tree.command(name='getroles', description='Refresh your Roblox group rank and server nickname')
+    @app_commands.guild_only()
+    @app_commands.checks.cooldown(1, 30, key=lambda i: (i.guild_id, i.user.id))
+    async def getroles(interaction: discord.Interaction):
+        await getrole.callback(interaction)
+
     @bot.tree.command(name='unlink', description='Delete your account link and remove bot-managed roles')
     @app_commands.guild_only()
     async def unlink(interaction: discord.Interaction):
