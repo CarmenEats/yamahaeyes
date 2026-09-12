@@ -334,7 +334,7 @@ class DPIBot(discord.Client):
         url = OAUTH + '/authorize?' + urlencode({
             'client_id': self.client_id, 'redirect_uri': self.redirect,
             'scope': 'openid profile', 'response_type': 'code', 'state': state,
-            'code_challenge': challenge, 'code_challenge_method': 'S256', 'prompt': 'consent'})
+            'code_challenge': challenge, 'code_challenge_method': 'S256'})
         await interaction.response.send_message(
             '1. Open **Sign in with Roblox** and approve on Roblox.\n'
             '2. Return here, click **I have signed in**, and confirm your username.\n'
