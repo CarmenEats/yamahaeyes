@@ -1,0 +1,222 @@
+DPI ROBLOX VERIFICATION BOT
+Group: https://www.roblox.com/communities/5008654
+
+READ THIS FIRST
+This is a complete bot program, but it needs YOUR Discord token, server ID,
+Roblox OAuth app credentials, and public HTTPS callback URL before it can run.
+Those values cannot be determined from screenshots. No Discord/Roblox accounts
+were logged into and nothing has been deployed for you.
+
+Reset the Discord token pasted in chat: Developer Portal > your app > Bot >
+Reset Token. Store the new token in a private hosting environment variable.
+The shared token is deliberately not embedded in this downloadable package.
+Never use a Roblox password, .ROBLOSECURITY cookie, or Roblox API key here.
+
+FILES
+bot.py              Main program / startup file.
+requirements.txt    Python packages; upload alongside bot.py.
+.env.example        Copy to .env and fill in, OR use hosting environment settings.
+                    Do not post a filled .env publicly.
+instructions.txt    This guide.
+
+WHAT MEMBERS DO
+1. Click the green Verify with Roblox button in #verify (or use /verify).
+2. Click the private Sign in with Roblox link and approve on Roblox's site.
+3. Return to Discord, click I have signed in, check the shown Roblox username,
+   and click Confirm my account. Never confirm someone else's account.
+4. The bot grants Verified, applies the configured group rank, and changes the
+   SERVER NICKNAME to the Roblox username (not the Roblox display name).
+
+The final Discord confirmation keeps a forwarded sign-in link from silently
+linking someone else's Roblox account to you. A username alone is never proof.
+The bot cannot bypass Roblox login/consent or change a global Discord username.
+
+RANK MAPPING (live group role IDs checked September 12, 2026)
+Roblox rank                         Discord role
+Torium Trainee                      Torium Trainee
+Torium Aide                         Torium Aide
+Torium Helper                       Torium Helper
+Torium Nanny                        Torium Nanny
+Torium Carer                        Torium Carer
+Torium Courier                      Torium Courier
+Torium Matrona                      Others
+Maha Servant / Stooge / Consultant   Maha Team
+Maha Counsel / Chief                Maha Team
+Maj Servant / Novitiate / Neophyte   Majora Team
+Maj Proselyte / Priesten             Majora Team
+Reverend Vicar / Oracle / Prioress   Others
+
+The live group currently has FIVE Maha and FIVE Maj ranks; all are included.
+The House of ... separator ranks are not assigned team roles.
+Tourist, Divinor, Holite, other unmapped ranks, and nonmembers receive Verified
+only. Verified means account ownership, not membership in this Roblox group.
+The bot removes its old rank role when a member changes to an unmapped rank or
+leaves the group. Other server roles are preserved. If multiple entries for the
+group are returned, the highest numerical rank determines the single team role.
+
+Rank mappings use exact ROBLOX ROLE IDs in RANK_ROLES near the top of bot.py.
+This is different from a Discord role ID or a numerical Roblox rank value.
+Existing Roblox role renames keep working; newly created ranks must be added.
+
+1. SET UP DISCORD
+Open https://discord.com/developers/applications and create/select your app.
+On the Bot page enable SERVER MEMBERS INTENT. Message Content is not needed.
+Under OAuth2 > URL Generator choose bot and applications.commands.
+Give the bot these permissions, then open the generated invite URL:
+  - Manage Roles
+  - Manage Nicknames
+  - View Channels
+  - Send Messages
+  - Embed Links
+  - Read Message History
+Administrator is unnecessary.
+
+In your server's Roles settings, move the BOT'S role ABOVE all Torium roles,
+Maha Team, Majora Team, Others, Verified, and Unverified. It must also be above
+the member's highest role to change their nickname. Discord will not allow the
+bot to rename the server owner. Test with an ordinary member, not the owner.
+
+Enable Developer Mode in Discord Settings > Advanced. Right-click the server,
+Copy Server ID, and use that value for DISCORD_GUILD_ID.
+
+Your screenshot shows #verify is private. Ensure unverified members can VIEW
+that channel and USE APPLICATION COMMANDS; the bot also needs its channel
+permissions there. Otherwise they cannot see or use verification. Sending
+ordinary chat messages is not needed. Ensure members can use /getrole in a
+channel they can still access after receiving Verified.
+
+2. PREPARE HOSTING AND A PUBLIC URL
+Open https://panel.modvc.org/ and sign in. Upload dpi-roblox-bot.zip and extract
+it into the project root, or upload the files separately. Select Python 3.11
+or newer, bot.py as the entry file, and python bot.py as the startup command.
+Install requirements.txt automatically, or in the terminal run:
+  python -m pip install -r requirements.txt
+
+For Roblox's browser callback, enable the host's public HTTPS URL/tunnel and
+route it to the bot's PORT (8080 by default). Obtain a stable URL, for example
+https://your-bot.example. The bot must be reachable at /oauth/callback.
+If a URL is assigned before launch, use it in step 3. If the host needs a
+running app first, obtain/configure its tunnel using the host's own workflow.
+The public page at / says whether the verification web server is online;
+/health returns HTTP 200 when Discord is connected and 503 while connecting.
+
+ModVC advertises ZIP uploads, Python, dependency installation and public tunnels.
+Its exact dashboard controls and assigned ports may vary. Its free plan has
+resource limits; 24/7 hosting is an advertised service, not guaranteed unlimited
+capacity. If a stable public HTTPS URL or persistent disk is unavailable on your
+plan, arrange those first or use a Python host that provides both.
+
+3. CREATE THE ROBLOX SIGN-IN APP
+Open https://create.roblox.com/dashboard/credentials and find OAuth 2.0 Apps.
+Create an OAuth app owned by your account (owning group 5008654 is NOT required
+to read its public ranks). Choose the Account Linking Tools category.
+Add ONLY the openid and profile permission scopes.
+Save the OAuth Client ID and Client Secret privately.
+Register this exact redirect URL, substituting your real public host:
+  https://your-bot.example/oauth/callback
+It must exactly match ROBLOX_REDIRECT_URI, including the path and trailing slash
+(there should be no trailing slash after callback).
+
+IMPORTANT: Roblox currently limits private OAuth apps to 10 unique users.
+For a whole community, complete Roblox's public-app review: app details,
+your own privacy/terms URLs, and the required short demonstration video.
+This app stores Discord IDs, Roblox IDs, and server role/panel configuration.
+Describe your own hosting provider, retention/backups and admin contact in your
+privacy notice. The bot itself does not host legal terms or a privacy policy.
+Review approval is controlled by Roblox; a Python file cannot bypass it.
+
+4. FILL YOUR PRIVATE SETTINGS
+Use the host's environment/secrets settings, or copy .env.example to .env next
+to bot.py. Replace the placeholders with:
+  DISCORD_TOKEN          Your NEW Discord bot token
+  DISCORD_GUILD_ID       Your Discord server ID
+  ROBLOX_CLIENT_ID       The OAuth app Client ID
+  ROBLOX_CLIENT_SECRET   The OAuth app Client Secret
+  ROBLOX_REDIRECT_URI    https://YOUR_REAL_HOST/oauth/callback
+  PORT                  8080 (or the internal port assigned by the host)
+  DATABASE_PATH         data/bot.db (or a path on persistent storage)
+Environment settings take precedence over .env. Do not include extra backslashes
+in tokens. Keep the file named .env, not .env.txt.
+
+Start the bot and look for 'Connected as ...' in the console. Only run ONE copy
+against this database. The bot is configured for one Discord server.
+
+5. POST THE PANEL
+As a server administrator or a member with Manage Server, type:
+  /setup
+in #verify. Or select another text channel with /setup channel:.
+
+It reuses roles with the matching names, ignoring emoji and capitalization;
+for example, the medal emoji before Torium Courier is fine. Missing roles are
+created with no permissions. Existing role colors and permissions are retained.
+Multiple matching role names stop setup so you can rename the duplicates.
+Others and Verified are created if absent. An existing Unverified role is removed
+after verification and restored by /unlink. It is not created automatically.
+Review new roles' channel access, and keep all automatic roles free of
+Administrator, Manage Roles and Manage Server permissions (the bot rejects them).
+
+/setup saves the Discord role IDs and posts the green-button panel. Repeating
+it in the same channel updates the saved panel. Moving it to another channel
+posts a new panel; manually delete the old one if you no longer want it.
+After a restart the old panel still works. In-progress sign-ins must restart.
+
+COMMANDS
+/verify     Start private Roblox verification.
+/getrole    Refresh your own rank and nickname (30-second per-user cooldown).
+/unlink     Remove your link and bot-controlled roles; nickname stays as-is.
+/setup      Admin: prepare roles and post/update the panel.
+/status     Admin: show saved role mapping and number of linked members.
+
+Verified members also sync on rejoining and every 30 minutes. Large servers
+take longer to complete a pass. Roblox caching can delay a recent promotion.
+One Roblox account can link to only one Discord account in this server. To
+move it, /unlink from the old Discord account before verifying the new one.
+If that account is inaccessible, the server operator must handle recovery
+after checking ownership; there is no public account-stealing override.
+
+BACKUPS AND LIMITS
+Preserve data/bot.db on a persistent disk. It contains account links and panel/
+role IDs, not Roblox passwords or OAuth tokens. Stop the bot before downloading
+a consistent database backup, then restart. Do not overwrite data during updates.
+Losing the database means members must verify again and you must rerun /setup.
+/unlink deletes the active database link; an operator's backups may retain older
+copies. Members may also revoke the OAuth app in their Roblox account settings.
+
+Roblox API failures prevent role syncing; they are not treated as 'no rank'.
+Discord role updates use separate API calls, so a permissions/network failure
+can leave an update partly finished. Fix the cause and retry /getrole.
+Existing verified links do not prove continued ownership forever: members should
+reverify after changing accounts. Scheduled rank checks use public group data.
+
+QUICK ACCEPTANCE CHECK
+- Verify a regular member; confirm Roblox username, Verified and expected rank.
+- Promote/demote that test member in Roblox; /getrole should replace the old role.
+- Verify an unmapped rank/nonmember; only Verified should remain.
+- Restart the bot; the existing panel and saved links should still work.
+- /unlink should remove managed roles and the saved account connection.
+
+TROUBLESHOOTING
+No slash commands: check server ID and invite scopes, then restart/reopen Discord.
+Gateway intent error: enable Server Members Intent in the Developer Portal.
+Invalid token: reset the Discord token and update the private environment value.
+Role error: move bot above the role, grant Manage Roles, rerun /setup.
+Nickname error only: check hierarchy/Manage Nicknames; owners cannot be renamed.
+OAuth redirect error: compare both configured URLs character for character.
+Browser cannot connect: check public HTTPS tunnel and its destination PORT.
+OAuth limited to a few users: publish the OAuth app through Roblox review.
+HTTP 429/5xx: wait and retry; do not repeatedly spam /getrole.
+
+IMPLEMENTATION REFERENCES (checked September 12, 2026)
+https://create.roblox.com/docs/cloud/auth/oauth2-registration
+https://create.roblox.com/docs/cloud/auth/oauth2-reference
+https://groups.roblox.com/v1/groups/5008654/roles
+https://discordpy.readthedocs.io/en/stable/interactions/api.html
+https://docs.discord.com/developers/topics/permissions
+https://panel.modvc.org/
+
+VALIDATION
+The accompanying code was imported and exercised with local automated tests
+for rank mapping, link uniqueness, verification session ownership/expiry,
+OAuth callback replay rejection, role replacement, and safe API failures.
+Live Discord/OAuth sign-in and ModVC deployment require your settings and have
+not been performed. Use the acceptance check above after configuring them.
